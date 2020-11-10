@@ -53,12 +53,22 @@ console.log(req.params.shortURL.length, templateVars.shortURL)
   res.render("urls_show", templateVars)
 })
 
+app.get("/u/:shortURL", (req, res) => {
+  const longURL = urlDatabase[req.params.shortURL.trim()]
+  if (longURL){
+    res.redirect(longURL);
+  } else {
+    res.status(404).send("Error URL not found")
+  }
+  console.log(longURL)
+});
+
 // *******************************************************
 
 app.post("/urls", (req, res) => {
   const id = generateRandomString()
   urlDatabase[id] = req.body.longURL
-  res.redirect("/urls");
+  res.redirect(`/urls/${id}`);
 
 })
 
