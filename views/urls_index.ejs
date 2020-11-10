@@ -9,7 +9,8 @@
   <title>TinyApp</title>
 </head>
 <body>
-    <header>
+    <%- include (`partials/_header`) %>
+    <!-- <header>
         <nav class="navbar navbar-expand-md navbar-dark bg-success">
           <a class="navbar-brand" href="/urls">TinyApp</a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,7 +23,7 @@
             </div>
           </div>
         </nav>
-      </header>
+      </header> -->
       
   <main style="margin: 1em;">
     <h3>My URLs</h3>
@@ -31,6 +32,8 @@
         <tr>
           <th scope="col">Short URL</th>
           <th scope="col">Long URL</th>
+          <th scope="col">Edit</th>
+          <th scope="col">Delete</th>
         </tr>
       </thead>
       <tbody>

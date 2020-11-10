@@ -7,7 +7,8 @@
 </head>
 
 <body>
-    <header>
+    <%- include (`partials/_header`) %>
+    <!-- <header>
         <nav class="navbar navbar-expand-md navbar-dark bg-success">
           <a class="navbar-brand" href="/urls">TinyApp</a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -20,15 +21,13 @@
             </div>
           </div>
         </nav>
-      </header>
+      </header> -->
   <div class="card text-center">
       <div class="card-header"></div>
       <div class="card-body">
         <h5 class="card-title">TinyURL for: <%= longURL %>  </h5>
         <p class="card-text">Short URL: <a href="/u/<%= shortURL %>"><%= shortURL %></a></p>
         <p class="card-text">
-
-
           <form class="card-title" action="/urls/<%=shortURL%>" method="POST">
           <div class="form-group mb-2">
             <label for="longURL">Edit:</label>
@@ -36,15 +35,7 @@
           </div>
           <button type="submit" class="btn btn-primary">Submit</button>
         </form>
-
-
       </p>
-
-
-
-
-
-
       </div>
     <div class="card-footer text-muted"></div>
   </div>
