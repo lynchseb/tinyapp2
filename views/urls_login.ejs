@@ -5,15 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-  <title>TinyApp Registration page</title>
+  <title>TinyApp Login Page</title>
 </head>
 <body>
     <%- include (`partials/_header`) %>
     <div class="card-body" style="padding: 10px; margin: auto; width: 50%">
-        <h4 class="card-title">Tiny App Registration Page</h4>
-        <p class="card-text">Please register your account using your email and chosen password.</p>
+        <h4 class="card-title">Tiny App Login Page</h4>
+        <p class="card-text">Please login to your account using your email and chosen password.</p>
       </div>
-    <form action="/register" method="POST">
+    <form action="/login" method="POST">
         <div class="form-group row" style="padding: 10px; margin: auto; width: 50%">
           <label for="inputEmail3" class="col-sm-2 col-form-label" style="padding: 10px">Email</label>
           <div class="col-sm-10" style="padding: 10px">
@@ -26,7 +26,7 @@
         </div>
         <div class="form-group row" style="padding: 10px; margin: auto; width: 50%">
           <div class="col-sm-10 offset-sm-2">
-            <button type="submit" class="btn btn-primary" style="width: 100px;">Register</button>
+            <button type="submit" class="btn btn-primary" style="width: 100px;">Login</button>
           </div>
         </div>
       </form>

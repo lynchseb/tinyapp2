@@ -23,8 +23,8 @@ const users = {
 
   "userRandomID": {
     id: "userRandomID",
-    email: "user@example.com",
-    password: "purple-monkey-dinosaur"
+    email: "12@12.com",
+    password: "12"
   },
 
   "user2RandomID": {
@@ -58,6 +58,21 @@ const checkRegistration = (email, password) => {
   return true
 }
 
+const checkUser = (email, password) => {
+  if(email === "" || password === ""){
+    return { error: "Please fill email and/or password"}
+  } 
+  for (let user in users) {
+    if (users[user].email === email && users[user].password === password) {
+      return users[user].id 
+    } 
+  }
+   return { error: "Username or Password is incorrect"};
+}
+let test = checkUser("12@12.com", "12")
+console.log(test)
+
+
 const generateUser = (id, email, password) => {
   return users[id] = {
     id,
@@ -86,6 +101,7 @@ app.get("/urls", (req, res) => {
   urls: urlDatabase,
   user_id: users[key]
 }
+// console.log(users)
 res.render("urls_index", templateVars)
 });
 
@@ -99,7 +115,19 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-  res.render("urls_register");
+  const templateVars = {
+    user_id: false
+  
+    }
+  res.render("urls_register", templateVars );
+})
+
+app.get("/login", (req, res) => {
+  const templateVars = {
+    user_id: false
+  
+    }
+  res.render("urls_login", templateVars);
 })
 
 app.get("/urls/:shortURL", (req, res) => {  
@@ -146,9 +174,16 @@ app.post("/urls/:shortURL", (req, res) => {
 })
 
 app.post("/login", (req, res) => {
-  res.cookie('user_id', req.body.username)
-  res.redirect("/urls")
-  // console.log(username)
+  const {email, password } = req.body;
+  console.log(email, password)
+  const result = checkUser(email, password)
+  console.log(result.email)
+  if (typeof result === "object"){
+    return res.status(403).send(result.error)
+  } else {
+    res.cookie("user_id", result)
+    res.redirect("/urls")
+  }
 })
 
 app.post("/logout", (req, res) => {
