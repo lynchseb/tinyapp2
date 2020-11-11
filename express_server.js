@@ -46,6 +46,25 @@ const generateRandomString = () => {
   return result;
 }
 
+const checkRegistration = (email, password) => {
+  if(email === "" || password === ""){
+    return { error: "Please fill email and/or password"}
+  } 
+  for (let user in users) {
+    if (users[user].email === email) {
+      return { error: "Email already in use" }
+    }
+  }
+  return true
+}
+
+const generateUser = (id, email, password) => {
+  return users[id] = {
+    id,
+    email,
+    password
+  }
+}
 
 
 
@@ -140,14 +159,14 @@ app.post("/logout", (req, res) => {
 app.post("/register", (req, res) => {
   const {email, password} = req.body
   const id = generateRandomString();
-  users[id] = {
-    id,
-    email,
-    password
+  const result = checkRegistration(email, password)
+  if(typeof result === "object" ){
+    return res.status(400).send(result.error)
+  } else {
+    generateUser(id, email, password)
+    res.cookie("user_id", id);
+    res.redirect("/urls");
   }
-  res.cookie("user_id", id);
-  // console.log(users)
-  res.redirect("/urls");
 })
 
 
