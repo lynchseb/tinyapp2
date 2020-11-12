@@ -8,7 +8,7 @@ app.set("view engine", "ejs");
 
 // Establishing enryption
 
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
 
 // Server middleware
 
@@ -17,30 +17,23 @@ app.use(bodyParser.urlencoded({extended: true}));
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
-// Local database
-// const urlDatabase = {
-//   "b2xVn2": "www.lighthouselabs.ca",
-//   "9sm5xK": "www.google.com"
-// };
+// Local Databases 
 const urlDatabase = {
   sgq3y6: { longURL: "www.google.ca", id: "userRandomID" },
   b6UTxQ: { longURL: "www.tsn.ca", id: "user2RandomID" }
 };
 
 const users = {
-
   "userRandomID": {
     id: "userRandomID",
     email: "1@1.com",
-    password: "1"
+    hashedPassword: bcrypt.hashSync("1", 10)
   },
-
   "user2RandomID": {
     id: "user2RandomID",
     email: "12@12.com",
-    password: "12"
+    hashedPassword: bcrypt.hashSync("12", 10)
   }
-
 }
 
 // Helper functions
@@ -66,14 +59,22 @@ const checkRegistration = (email, password) => {
   return true
 }
 
+const getPassword = (email) => {
+  for (let user in users) { 
+    if (users[user].email === email){
+      return { hashedPassword: users[user].hashedPassword, id: users[user].id }
+    }
+  }
+}
+
 const checkUser = (email, password) => {
   if(email === "" || password === ""){
     return { error: "Please fill email and/or password"}
   } 
-  for (let user in users) {
-    if (users[user].email === email && users[user].password === password) {
-      return users[user].id 
-    } 
+  const hashPass = getPassword(email)
+
+    if (bcrypt.compareSync(password, hashPass.hashedPassword) === true) {
+      return hashPass.id
   }
    return { error: "Username or Password is incorrect"};
 }
@@ -82,7 +83,7 @@ const generateUser = (id, email, password) => {
   return users[id] = {
     id,
     email,
-    password
+    "hashedPassword": password
   }
 }
 
@@ -108,10 +109,15 @@ const generateURL = (id, website, userID) => {
 
 // Routes
 
+app.get("/", (req, res) => {
+  res.redirect("/urls");
+})
+
 app.get("/urls", (req, res) => {
   let key = req.cookies["user_id"]
   let userUrls = urlsForUser(key)
-  console.log("userUrls", userUrls, "URLdatabase", urlDatabase)
+  // console.log("userUrls", userUrls, "URLdatabase", urlDatabase)
+  console.log(users)
   const templateVars = { 
   urls: userUrls,
   user_id: users[key]
@@ -235,7 +241,8 @@ app.post("/register", (req, res) => {
   if(typeof result === "object" ){
     return res.status(400).send(result.error)
   } else {
-    generateUser(id, email, password)
+    const hashedPassword = bcrypt.hashSync(password, 10)
+    generateUser(id, email, hashedPassword)
     res.cookie("user_id", id);
     res.redirect("/urls");
   }
