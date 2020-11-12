@@ -1,21 +1,24 @@
 //Server initilization
 const express = require("express");
 const app = express();
-const PORT = 8080; // default port 8080
+const cookieSession = require('cookie-session');
+const bodyParser = require("body-parser");
+const bcrypt = require('bcrypt');
 
+const PORT = 8080; // default port 8080
 // Establishing template view engine
 app.set("view engine", "ejs");
 
-// Establishing enryption
-
-const bcrypt = require('bcrypt');
-
 // Server middleware
 
-const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
-const cookieParser = require('cookie-parser');
-app.use(cookieParser());
+app.use(cookieSession({
+  name: 'session',
+  secret: "superSecret",
+
+  // Cookie Options
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+}))
 
 // Local Databases 
 const urlDatabase = {
@@ -114,7 +117,7 @@ app.get("/", (req, res) => {
 })
 
 app.get("/urls", (req, res) => {
-  let key = req.cookies["user_id"]
+  let key = req.session.user_id;
   let userUrls = urlsForUser(key)
   // console.log("userUrls", userUrls, "URLdatabase", urlDatabase)
   console.log(users)
@@ -127,7 +130,7 @@ res.render("urls_index", templateVars)
 });
 
 app.get("/urls/new", (req, res) => {
-  let key = req.cookies["user_id"]
+  let key = req.session.user_id;
   if(key === undefined){
     res.redirect("/login")
   }
@@ -154,7 +157,7 @@ app.get("/login", (req, res) => {
 })
 
 app.get("/urls/:shortURL", (req, res) => {  
-let key = req.cookies["user_id"]
+let key = req.session.user_id;
 
 if(key !== urlDatabase[req.params.shortURL.trim()].id){
   res.status(403).redirect("/urls")
@@ -186,14 +189,14 @@ app.get("/u/:shortURL", (req, res) => {
 
 app.post("/urls", (req, res) => {
   const website = req.body.longURL;
-  const userID = req.cookies["user_id"];
+  const userID = req.session.user_id;;
   const id = generateRandomString()
   generateURL(id, website, userID)
   res.redirect(`/urls/${id}`);
 })
 
 app.post("/urls/:shortURL/delete", (req, res) => {
-  const key = req.cookies["user_id"]
+  const key = req.session.user_id;
   if(key !== urlDatabase[req.params.shortURL.trim()].id){
     res.status(403).send("This does not belong to you")
    } else {
@@ -205,7 +208,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 })
 
 app.post("/urls/:shortURL", (req, res) => {
-  const key = req.cookies["user_id"]
+  const key = req.session.user_id;
   if(key !== urlDatabase[req.params.shortURL.trim()].id){
     res.status(403).send("This does not belong to you")
     
@@ -224,13 +227,13 @@ app.post("/login", (req, res) => {
   if (typeof id === "object"){
     return res.status(403).send(id.error)
   } else {
-    res.cookie("user_id", id)
+    req.session.user_id = id
     res.redirect("/urls")
   }
 })
 
 app.post("/logout", (req, res) => {
-  res.clearCookie("user_id");
+  req.session = null;
   res.redirect("/urls");
 })
 
@@ -243,7 +246,7 @@ app.post("/register", (req, res) => {
   } else {
     const hashedPassword = bcrypt.hashSync(password, 10)
     generateUser(id, email, hashedPassword)
-    res.cookie("user_id", id);
+    req.session.user_id = id;
     res.redirect("/urls");
   }
 })
