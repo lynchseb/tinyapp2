@@ -13,6 +13,7 @@
 
       
   <main style="margin: 1em;">
+    <% if(user_id) { %>
     <h3>My URLs</h3>
     <table class="table">
       <thead class="thead-light">
@@ -26,7 +27,7 @@
       <tbody>
         <% for(let url in urls) { %>
           <tr>
-            <td><%= url %></td> 
+            <td><a href="/u/<%= url %>"><%= url %></a></td> 
             <td><%= urls[url] %></td> 
             <td><form method="GET" action="/urls/ <%= url %> "><button class="btn btn-outline-primary">Edit</button></form></td>
             <td><form method="POST" action="/urls/<%= url %>/delete"><button class="btn btn-outline-danger">Delete</button></form></td>
@@ -35,6 +36,11 @@
         <% } %>
       </tbody>
     </table>
+    <% } else { %> 
+      <div class="alert alert-info" role="alert">
+        <strong>Heads up!</strong> In order to view URLs please login above.
+    </div>
+      <% } %>
   </main>
   <!-- Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
