@@ -27,7 +27,11 @@
       <tbody>
         <% for(let url in urls) { %>
           <tr>
+            <% if(url === "For British") { %>
+            <td><%= url %></td>  
+           <% } else { %>
             <td><a href="/u/<%= url %>"><%= url %></a></td> 
+           <% } %>
             <td><%= urls[url] %></td> 
             <td><form method="GET" action="/urls/ <%= url %> "><button class="btn btn-outline-primary">Edit</button></form></td>
             <td><form method="POST" action="/urls/<%= url %>/delete"><button class="btn btn-outline-danger">Delete</button></form></td>

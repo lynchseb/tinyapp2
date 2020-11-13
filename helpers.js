@@ -55,7 +55,8 @@ const urlsForUser = (id, urlDatabase) => {
     if (urlDatabase[key].id === id) {
       userURL[key] = urlDatabase[key].longURL;
     } else {
-      userURL[key] = "For British Eyes Only!";
+      key = "For British";
+      userURL[key] = "Eyes Only!"
     }
   }
   return userURL;

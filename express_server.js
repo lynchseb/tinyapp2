@@ -62,11 +62,12 @@ app.get("/urls/new", (req, res) => {
   let key = req.session.user_id;
   if (key === undefined) {
     res.redirect("/login");
+  } else {
+    const templateVars = {
+      user_id: users[key]
+    };
+    res.render("urls_new", templateVars);
   }
-  const templateVars = {
-    user_id: users[key]
-  };
-  res.render("urls_new", templateVars);
 });
 
 app.get("/register", (req, res) => {
@@ -132,13 +133,14 @@ app.post("/urls", (req, res) => {
 
 app.post("/urls/:shortURL/delete", (req, res) => {
   const key = req.session.user_id;
-  if (key !== urlDatabase[req.params.shortURL.trim()].id) {
+  if (req.params.shortURL === "For British") {
     res.status(403).send("No mere man can delete me!");
   } else {
     delete urlDatabase[req.params.shortURL];
     res.redirect("/urls");
   }
-});
+}
+);
 
 app.post("/urls/:shortURL", (req, res) => {
   const key = req.session.user_id;
